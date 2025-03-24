@@ -1,7 +1,9 @@
 # SingleInstanceLock
 使用Windows的mutex检测工程多开的情况，
 
-工程A的路径 D:\ProjectA\A.uproject 第一次启动， 创建互斥对象 并命名为 Global\UE4_SingleInstance_D__ProjectA_A.project。 
+工程A的路径 D:\ProjectA\A.uproject .
+
+A第一次启动， 创建互斥对象 并命名为 Global\UE4_SingleInstance_D__ProjectA_A.project。 
 
 使用具体路径当做名字，确保mutex的命名唯一，下面简称mutex-A
 
