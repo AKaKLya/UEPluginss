@@ -1,0 +1,189 @@
+把材质中DynamicParameter的默认值 传递给Niagara的DynamicParameter节点，
+并且设置为Niagara的DynamicParameter默认值.
+
+Index 0 Param 1
+Index 0 Param 2
+Index 0 Param 3
+Index 0 Param 4
+
+Index 1 Param 1
+Index 1 Param 2
+Index 1 Param 3
+Index 1 Param 4
+
+Index 2 Param 1
+Index 2 Param 2
+Index 2 Param 3
+Index 2 Param 4
+
+Index 3 Param 1
+Index 3 Param 2
+Index 3 Param 3
+Index 3 Param 4
+
+上面是DP名称的排列，Index等于 材质DP节点中的Index, Param 1 是R ， Param 2是G.....
+
+SetValue重新组合DP名称 保存在Result变量里:
+Index 0 Param 1 提取为01，
+Index 1 Param 2 提取为12，
+Index 3 Param 3 提取为33....
+
+在 UnrealEngine-4.27\Engine\Plugins\FX\Niagara\Source\NiagaraEditor\Private\ViewModels\Stack\NiagaraStackFunctionInput.cpp 中添加函数:
+void SetValue(UNiagaraStackFunctionInput* Ptr,TSharedPtr<FStructOnScope>& InputValues,TArray<UMaterialExpressionDynamicParameter*>& DynamicParameters)
+{
+	
+	FNiagaraParameterHandle Handle = Ptr->GetInputParameterHandle();
+	FString InputString = Handle.GetName().ToString();
+	//#define PrintName UE_LOG(LogTemp,Warning,TEXT("Return:%s"),*InputString);
+
+	//UE_LOG(LogTemp,Warning,TEXT("Param Name:%s"),*InputString);
+	
+	if (!InputString.Contains("Index") && !InputString.Contains("Param"))
+	{
+		//PrintName
+		return;
+	}
+	
+	{
+		const FString PatternString = TEXT("Index\\s+[0-3]\\s+Param\\s+[1-4]");
+		FRegexPattern Pattern(PatternString);
+		FRegexMatcher Matcher(Pattern, InputString);
+		//PrintName
+		if (!Matcher.FindNext()) return;
+	}
+	
+	uint32 Result = 0;
+	FRegexPattern Pattern(TEXT("Index\\s+(\\d+)\\s+Param\\s+(\\d+)"));
+	FRegexMatcher Matcher(Pattern, InputString);
+	if (Matcher.FindNext())
+	{
+		FString XStr = Matcher.GetCaptureGroup(1);
+		FString YStr = Matcher.GetCaptureGroup(2);
+		
+		int32 X = FCString::Atoi(*XStr); 
+		int32 Y = FCString::Atoi(*YStr);
+		
+		uint32 CombinedValue = X * 10 + Y;
+		
+		Result = CombinedValue;
+	}
+	UMaterialExpressionDynamicParameter* DP = nullptr;
+	
+	auto GetDynamicParameter = [&DynamicParameters,&DP](int Index)
+	{
+		for (UMaterialExpressionDynamicParameter* FindDP : DynamicParameters)
+		{
+			if (FindDP->ParameterIndex == Index)
+			{
+				DP = FindDP;
+				break;
+			}
+		}
+	};
+	auto SetStructValue = [&InputValues, &DP](float NewValue)
+	{
+		if (void* StructMemory = InputValues->GetStructMemory())
+		{
+			FNiagaraFloat* NiagaraFloatInstance = static_cast<FNiagaraFloat*>(StructMemory);
+			NiagaraFloatInstance->Value = NewValue; 
+		}
+	};
+	
+	if (Result < 5)
+	{
+		GetDynamicParameter(0);
+	}
+	else if (Result > 5 && Result < 15 )
+	{
+		GetDynamicParameter(1);
+	}
+	else if (Result > 15 && Result < 25 )
+	{
+		GetDynamicParameter(2);
+	}
+	else if (Result > 25 && Result < 35 )
+	{
+		GetDynamicParameter(3);
+	}
+	
+	switch (Result)
+	{
+	case 0: {break;}
+	case 1: 
+		SetStructValue(DP->DefaultValue.R);
+		break;
+	case 2:
+		SetStructValue(DP->DefaultValue.G);
+		break;
+	case 3: 
+		SetStructValue(DP->DefaultValue.B);
+		break;
+	case 4: 
+		SetStructValue(DP->DefaultValue.A);
+		break;
+		
+	case 11: 
+		SetStructValue(DP->DefaultValue.R);
+		break;
+	case 12: 
+		SetStructValue(DP->DefaultValue.G);
+		break;
+	case 13: 
+		SetStructValue(DP->DefaultValue.B);
+		break;
+	case 14: 
+		SetStructValue(DP->DefaultValue.A);
+		break;
+		
+	case 21: 
+		SetStructValue(DP->DefaultValue.R);
+		break;
+	case 22: 
+		SetStructValue(DP->DefaultValue.G);
+		break;
+	case 23: 
+		SetStructValue(DP->DefaultValue.B);
+		break;
+	case 24: 
+		SetStructValue(DP->DefaultValue.A);
+		break;
+
+	case 31: 
+		SetStructValue(DP->DefaultValue.R);
+		break;
+	case 32: 
+		SetStructValue(DP->DefaultValue.G);
+		break;
+	case 33: 
+		SetStructValue(DP->DefaultValue.B);
+		break;
+	case 34: 
+		SetStructValue(DP->DefaultValue.A);
+		break;
+	}
+}
+
+在 void UNiagaraStackFunctionInput::RefreshValues() 末尾调用
+
+void UNiagaraStackFunctionInput::RefreshValues() 
+{
+    //............省略
+    if (DefaultInputValues.LocalStruct.IsValid())
+	{
+		
+		TSharedPtr<FNiagaraEmitterViewModel> ThisEmitterViewModel = GetEmitterViewModel();
+		if (ThisEmitterViewModel.IsValid())
+		{
+			if (ThisEmitterViewModel->GetSimulation().Pin().IsValid())
+			{
+				FNiagaraEmitterInstance* Instance = ThisEmitterViewModel->GetSimulation().Pin().Get();
+				TArray<UMaterialExpressionDynamicParameter*> ExpressionParams;
+				UNiagaraStackFunctionInputUtilities::GetMaterialExpressionDynamicParameter(ThisEmitterViewModel->GetEmitter(), Instance, ExpressionParams);
+				if (ExpressionParams.Num()>0)
+				{
+					SetValue(this,DefaultInputValues.LocalStruct,ExpressionParams);
+				}
+			}
+		}
+	}
+}
