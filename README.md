@@ -2,6 +2,10 @@
 
 ![SS](https://github.com/user-attachments/assets/c8224baf-0a88-4968-853b-17f519e012f9)
 
+如果已经打开同一个工程，后续再次打开时 弹窗提醒是否继续打开.
+
+## 实现方法
+
 使用Windows的mutex检测工程多开的情况，
 
 工程A的路径 D:\ProjectA\A.uproject .
