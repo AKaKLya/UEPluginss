@@ -10,16 +10,9 @@
         var doc = app.activeDocument;
         var originalName = doc.name.replace(/\.[^\.]+$/, "");
         
-        // 创建目录
-        var outputFolder = new Folder("C:/PSLog");
-        if (!outputFolder.exists) {
-            if (!outputFolder.create()) {
-                throw new Error("无法创建目录");
-            }
-        }
 
         // 准备导出路径
-        var exportFile = new File("C:/PSLog/" + originalName + ".png");
+        var exportFile = new File("D:/UEImport/" + originalName + ".png");
         if (exportFile.exists) exportFile.remove(); // 强制覆盖
 
         // 执行导出
