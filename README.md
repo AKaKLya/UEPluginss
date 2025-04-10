@@ -1,4 +1,4 @@
-![WinName](https://github.com/user-attachments/assets/1f473f6f-44f9-4690-a582-c70698bc13d4)# SingleInstanceLock
+# SingleInstanceLock
 
 ![SS](https://github.com/user-attachments/assets/c8224baf-0a88-4968-853b-17f519e012f9)
 
