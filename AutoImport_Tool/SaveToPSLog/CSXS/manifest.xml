@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest Version="6.0" 
+                   ExtensionBundleId="com.yourdomain.pslog" 
+                   ExtensionBundleVersion="1.0">
+    <ExtensionList>
+        <Extension Id="com.yourdomain.pslog.main" Version="1.0"/>
+    </ExtensionList>
+    
+    <ExecutionEnvironment>
+        <HostList>
+            <!-- 支持Photoshop 2020 (21.0) 及以上版本 -->
+            <Host Name="PHXS" Version="[21.0,99.9]"/>
+            <Host Name="PHSP" Version="[21.0,99.9]"/>
+        </HostList>
+        <LocaleList>
+            <Locale Code="All"/>
+        </LocaleList>
+        <RequiredRuntime Name="CSXS"/>
+    </ExecutionEnvironment>
+    
+    <DispatchInfoList>
+        <Extension Id="com.yourdomain.pslog.main">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./index.html</MainPath>
+                    <ScriptPath>./jsx/main.jsx</ScriptPath>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>PSLog Export</Menu>
+                    <Geometry>
+                        <Size>
+                            <Width>200</Width>
+                            <Height>100</Height>
+                        </Size>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+    </DispatchInfoList>
+</ExtensionManifest>
