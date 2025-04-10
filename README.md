@@ -1,4 +1,4 @@
-# SingleInstanceLock
+![WinName](https://github.com/user-attachments/assets/1f473f6f-44f9-4690-a582-c70698bc13d4)# SingleInstanceLock
 
 ![SS](https://github.com/user-attachments/assets/c8224baf-0a88-4968-853b-17f519e012f9)
 
@@ -34,4 +34,34 @@ A第二次被启动，创建互斥对象 并命名为 Global\UE4_SingleInstance_
 2. 从PS中导出 T.png 到 D:\UEImport 文件夹中，文件夹发生变化，触发插件的监控事件
 3. 插件判断文件名T.png的后缀 选择贴图导入模式，自动导入贴图
 4. 贴图导入完成后，删除D:\UEImport\T.png文件
+
+## AutoImport_Tool
+提供了PS和3DMAX的插件，一键导出png fbx 到 D:\UEImport文件夹
+
+### PS插件安装
+把SaveToPSLog文件夹 放在 Adobe Photoshop 2020\Required\CEP\extensions
+
+打开PS，在工具栏中的 窗口--->扩展功能--->PSLogExport 召唤插件按钮
+
+SaveToPSLog\jsx\main.jsx 可以修改导出路径
+
+### 3dmax插件安装
+方法一:
+
+DragAndDrop-Macro2.mcr 放到 C:\Users\Administrator\AppData\Local\Autodesk\3dsMax\2021 - 64bit\CHS\usermacros
+
+Administrator是你的Windows系统使用的用户名，
+
+![WinName](https://github.com/user-attachments/assets/9467c895-54f4-495c-8d63-5b88c03482ae)
+
+方法二:
+工具栏--->脚本--->打开脚本， 选择A.ms
+![m1](https://github.com/user-attachments/assets/e79f90ee-f242-469a-9421-83bbc9781063)
+
+![m2](https://github.com/user-attachments/assets/77e2b939-7e02-4826-9fd0-e4959dad5eb2)
+
+![m3](https://github.com/user-attachments/assets/961f0c58-077e-4110-9efa-ded401334b02)
+
+![m4](https://github.com/user-attachments/assets/2ecf96a9-09e3-4491-b17d-37ca77e101ca)
+
 
